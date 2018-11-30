@@ -2,22 +2,18 @@ package com.example.testapplication
 
 import android.os.Bundle
 import android.util.Log
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
-import io.reactivex.Observable
-import io.reactivex.Single
-import kotlinx.android.synthetic.main.activity_main.*
 import com.example.testapplication.Network.GitHubService
-import com.squareup.moshi.KotlinJsonAdapterFactory
-import com.squareup.moshi.Moshi
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.rxkotlin.addTo
 import io.reactivex.schedulers.Schedulers
+import kotlinx.android.synthetic.main.activity_main.*
+import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
-import okhttp3.logging.HttpLoggingInterceptor
-import okhttp3.OkHttpClient
 import retrofit2.converter.moshi.MoshiConverterFactory
 
 
@@ -52,16 +48,18 @@ class MainActivity : AppCompatActivity() {
         interceptor.level = HttpLoggingInterceptor.Level.BODY
         val client = OkHttpClient.Builder().addInterceptor(interceptor).build()
 
-        val moshi = Moshi.Builder()
+        // it used for reflection
+        /*val moshiReflection = Moshi.Builder()
             // ... add your own JsonAdapters and factories ...
             .add(KotlinJsonAdapterFactory())
             .build()
+            */
 
         val retrofit = Retrofit.Builder()
             .baseUrl("https://api.github.com/")
             .client(client)
             .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-            .addConverterFactory(MoshiConverterFactory.create(moshi))
+            .addConverterFactory(MoshiConverterFactory.create(/*moshiReflection*/))
             .build()
 
 
@@ -75,9 +73,10 @@ class MainActivity : AppCompatActivity() {
                     for (repo in it) {
                         Log.d("-----------------", "-------------------")
                         Log.d("MojiTest", "ID        " + repo.id.toString())
-                        Log.d("MojiTest", "NAME      " + repo.name.toString())
+                        Log.d("MojiTest", "NAME      " + repo.name)
                         Log.d("MojiTest", "FullName  " + repo.fullName.toString())
                         Log.d("MojiTest", "Private   " + repo.private.toString())
+                        Log.d("MojiTest", "HtmlUrl   " + repo.htmlUrl)
                         Log.d("-----------------", "-------------------")
                     }
 

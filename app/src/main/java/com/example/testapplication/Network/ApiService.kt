@@ -14,7 +14,7 @@ interface GitHubService {
     fun listRepos(@Path("user") user: String): Single<List<Repo>>
 
 
-    @PUT("users/{user}/repos")
+    @PUT("users")
     fun sendtestData(@Body() data: List<Repo>): Completable
 
 }
